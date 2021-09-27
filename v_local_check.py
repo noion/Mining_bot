@@ -228,7 +228,7 @@ class Ui_MainWindow(object):
         self.label_status.setText(_translate("MainWindow", "Status"))
         self.start_button.setText(_translate("MainWindow", "Start"))
         self.stop_button.setText(_translate("MainWindow", "Stop"))
-        self.local_cloib.setText(_translate("MainWindow", "Colib local"))
+        self.local_cloib.setText(_translate("MainWindow", "Colibrate"))
         self.self_remove.setText(_translate("MainWindow", "Self remove"))
         self.station_screenshot.setText(_translate("MainWindow", "Station screen"))
         self.status_info.setText(_translate("MainWindow", "None"))

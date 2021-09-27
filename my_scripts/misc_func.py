@@ -56,5 +56,5 @@ def colibrate_local():
     x_cor_l = x_l - x
     y_cor_l = y_l - y
     local_cv = cv.rectangle(relation_cv, (x_cor_l, y_cor_l), (x_cor_l + w_l, y_cor_l + h_l), (0, 255, 0), thickness=1)
-    main_window = cv.rectangle(local_cv, (x_cor_l, y_cor_l), (x_cor_l + w_l, y_cor_l + h_l), (0, 255, 0), thickness=1)
-    cv.imshow('img', local_cv)
+    main_window = cv.rectangle(local_cv, (27, 0), (967, 570), (0, 255, 0), thickness=1)
+    cv.imshow('img', main_window)
