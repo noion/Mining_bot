@@ -9,7 +9,7 @@ from queue import Queue
 from my_scripts.coords_and_img import *
 from my_scripts import misc_func as mf
 
-V_LC = 'v0.34'
+V_LC = 'v0.36'
 pygame.mixer.init()
 SAVE_FILE = 'save.txt'
 q = Queue()
@@ -127,13 +127,15 @@ class MainLocalCheck:
                 return
             else:
                 self.minus = False
-            neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.75,
-                                               grayscale=True)
-            if neutral is not None:
-                x, y = pyautogui.center(neutral)
-                self.neutral_cord_y = y
-                neut_check = []
-                for i in range(2):
+            neut_check = []
+            y = None
+            for _ in range(2):
+                neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.75,
+                                                   grayscale=True)
+                if neutral is not None:
+                    print('mb neut')
+                    x, y = pyautogui.center(neutral)
+                    self.neutral_cord_y = y
                     if pyautogui.locateOnScreen(LOCAL_ME, region=(1057, y - 10, 140, 25), confidence=0.75) is not None \
                             or pyautogui.locateOnScreen(LOCAL_EMPTY_GRAYSCALE, region=(1045, y - 10, 140, 30),
                                                         confidence=0.75, grayscale=True) is not None:
@@ -142,16 +144,13 @@ class MainLocalCheck:
                         neut_check.append(True)
                     time.sleep(2)
                     print(neut_check)
-                if False not in neut_check:
-                    self.neutral = True
-                    self.info({'neutral': self.neutral})
-                    self.info({'neutral_y': self.neutral_cord_y})
-                    pyautogui.screenshot(region=(1057, y - 10, 140, 25)).save('img/i_see.png')
+            if len(neut_check) == 2 and False not in neut_check:
+                self.neutral = True
+                self.info({'neutral': self.neutral})
+                self.info({'neutral_y': self.neutral_cord_y})
+                pyautogui.screenshot(region=(1057, y - 10, 140, 25)).save('img/i_see.png')
 
-                    return
-                else:
-                    self.neutral = False
-                    self.neutral_cords = None
+                return
             else:
                 self.neutral = False
                 self.neutral_cords = None
