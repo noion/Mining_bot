@@ -127,14 +127,13 @@ class MainLocalCheck:
                 return
             else:
                 self.minus = False
-            neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.95,
+            neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.75,
                                                grayscale=True)
             if neutral is not None:
                 x, y = pyautogui.center(neutral)
                 self.neutral_cord_y = y
                 neut_check = []
-                for i in range(3):
-
+                for i in range(2):
                     if pyautogui.locateOnScreen(LOCAL_ME, region=(1057, y - 10, 140, 25), confidence=0.75) is not None \
                             or pyautogui.locateOnScreen(LOCAL_EMPTY_GRAYSCALE, region=(1045, y - 10, 140, 30),
                                                         confidence=0.75, grayscale=True) is not None:
@@ -210,6 +209,7 @@ class MainLocalCheck:
                 self.over = True
                 mf.click_queue([OVER_BUTTON, VUE])
                 mf.click_queue([OVER_STATION, GO_DOCK])
+                self.status = 'dock'
         else:
             self.time_stop = time.time()
             self.drill_status = False
