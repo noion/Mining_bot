@@ -9,7 +9,7 @@ from queue import Queue
 from my_scripts.coords_and_img import *
 from my_scripts import misc_func as mf
 
-V_LC = 'v0.36'
+V_LC = 'v0.37'
 pygame.mixer.init()
 SAVE_FILE = 'save.txt'
 q = Queue()
@@ -45,7 +45,6 @@ class MainLocalCheck:
 
     def inforamtion_text(self):
         if not self.threads:
-
             self.info({'info': f''''time = {time.ctime()}
                             ore = {self.ore}, status = {self.status}, cargo = {self.cargo}, 
                             first belt status = {self.status_belt_1}, minus = {self.minus}, neutal = {self.neutral}'''})
@@ -105,17 +104,27 @@ class MainLocalCheck:
                 self.inforamtion_text()
         except FileNotFoundError:
             self.info({'info': 'NO SAVE'})
-            with open('save.txt', encoding='utf-8', mode='x') as save:
+            with open('save.txt', encoding='utf-8', mode='x') as _:
                 pass
             self.data_save()
 
     def drill_on(self):
-        self.status = 'mine'
-        self.drill_status = True
-        self.info({'drill_status': self.drill_status})
-        self.time_start = time.time()
-        self.data_save()
-        mf.click_queue([DREEL_1, DREEL_2, DREEL_3])
+        time.sleep(5)
+        if self.neutral or self.minus:
+            while pyautogui.locateOnScreen(SPEED, region=SPEED_CHECK, confidence=0.75) is not None:
+                pass
+            time.sleep(3)
+            self.to_dock()
+        elif pyautogui.locateOnScreen(SPEED, region=SPEED_CHECK, confidence=0.75) is None:
+            self.status = 'mine'
+            self.drill_status = True
+            self.info({'drill_status': self.drill_status})
+            self.time_start = time.time()
+            self.data_save()
+            mf.click_queue([DREEL_1, DREEL_2, DREEL_3])
+        else:
+            self.neutral_minus_check()
+
 
     def neutral_minus_check(self):
         try:
@@ -169,7 +178,7 @@ class MainLocalCheck:
             local_allert = True
         return local_allert
 
-    def recheck_local(self, scroll_up=True, on_undock=False):
+    def recheck_local(self, scroll_up=True):
         flag = True
         self.recheck = False
         if self.minus or self.neutral:
@@ -247,12 +256,12 @@ class MainLocalCheck:
                 self.info({'info': f'Now mined {round(ore_mined, 2)} ore'})
                 self.extraction()
                 self.data_save()
-            self.recheck_local(scroll_up=False, on_undock=True)
+            self.recheck_local(scroll_up=False)
             self.inforamtion_text()
             if self.cargo == 'empty' and not self.recheck:
                 x, y = mf.rand_cords(UNDOCK)
                 mf.click(x, y)
-                time.sleep(random.randint(20, 30))
+                time.sleep(random.randint(10, 15))
                 self.status = 'idle'
                 self.recheck_local(scroll_up=False)
                 if self.minus or self.neutral:
@@ -295,15 +304,12 @@ class MainLocalCheck:
                 pygame.mixer.music.load("audio/Нет_минералов.mp3")
                 pygame.mixer.music.play()
                 mf.click_queue([OVER_REWARP_BELT, WARP_TO_2_POSITION])
-                time.sleep(random.randint(60, 70))
                 self.drill_on()
-                self.status = 'mine'
                 self.info({'status': self.status})
-
                 self.data_save()
 
         if self.status == 'idle' and not self.minus:
-            self.recheck_local(scroll_up=False, on_undock=True)
+            self.recheck_local(scroll_up=False)
             self.status = 'warp_to_mine'
             if not self.over:
                 self.over = True
@@ -315,11 +321,6 @@ class MainLocalCheck:
             mf.click_queue(queue)
 
         if self.status == 'warp_to_mine':
-            time.sleep(random.randint(60, 70))
-            self.neutral_minus_check()
-            if self.minus or self.neutral:
-                self.to_dock()
-                self.data_save()
             self.drill_on()
             self.data_save()
 
@@ -347,7 +348,6 @@ class MainLocalCheck:
 
 
 class pocess(Thread):
-
     def __init__(self, check, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.check = check
