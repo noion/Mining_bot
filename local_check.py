@@ -109,21 +109,25 @@ class MainLocalCheck:
             self.data_save()
 
     def drill_on(self):
-        time.sleep(5)
-        if self.neutral or self.minus:
-            while pyautogui.locateOnScreen(SPEED, region=SPEED_CHECK, confidence=0.75) is not None:
-                pass
-            time.sleep(3)
-            self.to_dock()
-        elif pyautogui.locateOnScreen(SPEED, region=SPEED_CHECK, confidence=0.75) is None:
-            self.status = 'mine'
-            self.drill_status = True
-            self.info({'drill_status': self.drill_status})
-            self.time_start = time.time()
-            self.data_save()
-            mf.click_queue([DREEL_1, DREEL_2, DREEL_3])
-        else:
-            self.neutral_minus_check()
+        time.sleep(20)
+        print(self.status)
+        while self.status == 'warp_to_mine':
+            if self.neutral or self.minus:
+                while pyautogui.locateOnScreen(SPEED, region=SPEED_CHECK, confidence=0.75, grayscale=True) is None:
+                    pass
+                time.sleep(3)
+                self.to_dock()
+            elif pyautogui.locateOnScreen(SPEED, region=SPEED_CHECK, confidence=0.75, grayscale=True) is None:
+                time.sleep(3)
+                self.status = 'mine'
+                self.drill_status = True
+                self.info({'drill_status': self.drill_status})
+                self.time_start = time.time()
+                self.data_save()
+                mf.click_queue([DREEL_1, DREEL_2, DREEL_3])
+            else:
+                print('else')
+                self.neutral_minus_check()
 
 
     def neutral_minus_check(self):
@@ -142,17 +146,15 @@ class MainLocalCheck:
                 neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.75,
                                                    grayscale=True)
                 if neutral is not None:
-                    print('mb neut')
                     x, y = pyautogui.center(neutral)
                     self.neutral_cord_y = y
-                    if pyautogui.locateOnScreen(LOCAL_ME, region=(1057, y - 10, 140, 25), confidence=0.75) is not None \
+                    if pyautogui.locateOnScreen(LOCAL_ME, region=(1057, y - 10, 140, 25), confidence=0.70) is not None \
                             or pyautogui.locateOnScreen(LOCAL_EMPTY_GRAYSCALE, region=(1045, y - 10, 140, 30),
                                                         confidence=0.75, grayscale=True) is not None:
                         neut_check.append(False)
                     else:
                         neut_check.append(True)
                     time.sleep(2)
-                    print(neut_check)
             if len(neut_check) == 2 and False not in neut_check:
                 self.neutral = True
                 self.info({'neutral': self.neutral})

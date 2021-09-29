@@ -253,10 +253,9 @@ class Ui_MainWindow(object):
     def remove_me(self):
         if self.neutral_cord_y is not None:
             me = pyautogui.screenshot(region=(1057, int(self.neutral_cord_y) - 10, 140, 25))
-            me.save(r'img/shtrafnoy.png')
-            colib_me = cv.imread(r'img/shtrafnoy.png')
+            me.save(r'img/me_remove.png')
+            colib_me = cv.imread(r'img/me_remove.png')
             cv.imshow('Remove neutral', colib_me)
-            cv.waitKey(5)
             self.activity_view.setText("Look at screenshot, i remove him")
         else:
             self.activity_view.setText("Don't see you, show me in local")
