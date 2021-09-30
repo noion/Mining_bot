@@ -9,7 +9,9 @@
 
 # pyuic5 -x qt_v0.1_bg -o result.py
 # pyinstaller --onefile -w -i "E:\Python\Mining_bot\img\ico.ico" v_local_check.py
-V_QT = 'v0.12'
+
+
+V_QT = 'v0.13'
 
 import sys
 
@@ -21,6 +23,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 import cv2 as cv
 import local_check as lc
 from my_scripts import misc_func as mf
+import telegram_bot
 
 SAVE_FILE = 'save.txt'
 
@@ -54,26 +57,20 @@ class Worker(QThread):
                 check.local_check()
 
 
-# class WorkerTelegram(QThread):
-#     progress = pyqtSignal(str)
-#
-#     def __init__(self, parent=None):
-#         QThread.__init__(self, parent)
-#
-#     def run(self):
-#         self.progress.emit(f"Local check START")
-#         check = lc.MainLocalCheck(save_file=SAVE_FILE, starter=True, threads=True, queue=q)
-#         while True:
-#             try:
-#                 check.local_check()
-#             except OSError as err:
-#                 print(f'sistem restart... : {err}')
-#                 check.local_check()
+class WorkerTelegram(QThread):
+    progress = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        QThread.__init__(self, parent)
+
+    def run(self):
+        telegram_bot.bot_process(queue=q)
 
 
 class Ui_MainWindow(object):
     def __init__(self):
         self.neutral_cord_y = None
+        self.pull_num = 0
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -105,6 +102,9 @@ class Ui_MainWindow(object):
         self.start_button = QtWidgets.QPushButton(self.centralwidget)
         self.start_button.setGeometry(QtCore.QRect(300, 140, 71, 23))
         self.start_button.setObjectName("start_button")
+        self.start_telegram = QtWidgets.QPushButton(self.centralwidget)
+        self.start_telegram.setGeometry(QtCore.QRect(300, 107, 71, 23))
+        self.start_telegram.setObjectName("start_telegram")
         self.stop_button = QtWidgets.QPushButton(self.centralwidget)
         self.stop_button.setGeometry(QtCore.QRect(300, 173, 71, 23))
         self.stop_button.setObjectName("start_button")
@@ -218,6 +218,7 @@ class Ui_MainWindow(object):
         self.station_screenshot.raise_()
         self.local_cloib.raise_()
         self.self_remove.raise_()
+        self.start_telegram.raise_()
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
@@ -233,9 +234,12 @@ class Ui_MainWindow(object):
         self.self_remove.clicked.connect(self.remove_me)
 
         self.my_thread = Worker()
-        # self.telegram_thread = WorkerTelegram()
         self.start_button.clicked.connect(self.start_worker)
         self.stop_button.clicked.connect(self.stop_worker)
+
+        self.telegram_thread = WorkerTelegram()
+        self.start_telegram.clicked.connect(self.start_telegram_thread)
+
 
 
 
@@ -249,6 +253,7 @@ class Ui_MainWindow(object):
 
         self.label_status.setText(_translate("MainWindow", "Status"))
         self.start_button.setText(_translate("MainWindow", "Start"))
+        self.start_telegram.setText(_translate("MainWindow", "Telegram bot"))
         self.stop_button.setText(_translate("MainWindow", "Stop"))
         self.local_cloib.setText(_translate("MainWindow", "Colibrate"))
         self.self_remove.setText(_translate("MainWindow", "Self remove"))
@@ -285,7 +290,13 @@ class Ui_MainWindow(object):
     def add_fuction(self):
         while len(q.queue) > 0:
             info = q.get()
-            for name, value in info.items():
+            if self.pull_num == info['pull_num']:
+                pass
+            else:
+                self.pull_num = info['pull_num']
+                keys = list(info.keys())
+                name = keys[0]
+                value = info[name]
                 if name == 'info':
                     self.activity_view.setText(value)
                 elif name == 'status':
@@ -305,6 +316,8 @@ class Ui_MainWindow(object):
                 elif name == 'neutral_y':
                     self.neutral_cord_y = value
 
+
+
     def start_worker(self):
         self.my_thread.start()
         self.start_button.setEnabled(False)
@@ -317,17 +330,12 @@ class Ui_MainWindow(object):
         if self.my_thread.isFinished:
             self.activity_view.setText("Local check STOP...")
 
-    # def start_telegram(self):
-    #     self.my_thread.start()
-    #     # self.start_button.setEnabled(False)
-    #     if self.my_thread.isRunning:
-    #         self.activity_view.setText("Telegram bot START...")
-    #
-    # def stop_telegram(self):
-    #     self.my_thread.stop()
-    #     # self.start_button.setEnabled(True)
-    #     if self.my_thread.isFinished:
-    #         self.activity_view.setText("Telegram bot STOP...")
+    def start_telegram_thread(self):
+        self.telegram_thread.start()
+        self.start_telegram.setEnabled(False)
+        if self.telegram_thread.isRunning:
+            self.activity_view.setText("Telegram bot START...")
+
 
 def main():
     resiz_bg(template_width, template_height)

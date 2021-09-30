@@ -9,7 +9,7 @@ from queue import Queue
 from my_scripts.coords_and_img import *
 from my_scripts import misc_func as mf
 
-V_LC = 'v0.36'
+V_LC = 'v0.37b'
 pygame.mixer.init()
 SAVE_FILE = 'save.txt'
 q = Queue()
@@ -35,13 +35,16 @@ class MainLocalCheck:
         self.threads = threads
         self.queue = queue
         self.neutral_cord_y = None
+        self.pull_num = 1
 
     def info(self, text):
         if not self.threads:
             for key in text.keys():
                 print(f'{key} = {text[key]}')
         else:
+            text['pull_num'] = self.pull_num
             self.queue.put(text)
+            self.pull_num += 1
 
     def inforamtion_text(self):
         if not self.threads:
