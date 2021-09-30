@@ -133,7 +133,6 @@ class MainLocalCheck:
                 neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.75,
                                                    grayscale=True)
                 if neutral is not None:
-                    print('mb neut')
                     x, y = pyautogui.center(neutral)
                     self.neutral_cord_y = y
                     if pyautogui.locateOnScreen(LOCAL_ME, region=(1057, y - 10, 140, 25), confidence=0.75) is not None \
@@ -143,7 +142,6 @@ class MainLocalCheck:
                     else:
                         neut_check.append(True)
                     time.sleep(2)
-                    print(neut_check)
             if len(neut_check) == 2 and False not in neut_check:
                 self.neutral = True
                 self.info({'neutral': self.neutral})
@@ -252,7 +250,7 @@ class MainLocalCheck:
             if self.cargo == 'empty' and not self.recheck:
                 x, y = mf.rand_cords(UNDOCK)
                 mf.click(x, y)
-                time.sleep(random.randint(20, 30))
+                time.sleep(random.randint(15, 20))
                 self.status = 'idle'
                 self.recheck_local(scroll_up=False)
                 if self.minus or self.neutral:
@@ -295,7 +293,7 @@ class MainLocalCheck:
                 pygame.mixer.music.load("audio/Нет_минералов.mp3")
                 pygame.mixer.music.play()
                 mf.click_queue([OVER_REWARP_BELT, WARP_TO_2_POSITION])
-                time.sleep(random.randint(60, 70))
+                time.sleep(random.randint(60, 61))
                 self.drill_on()
                 self.status = 'mine'
                 self.info({'status': self.status})
@@ -315,7 +313,7 @@ class MainLocalCheck:
             mf.click_queue(queue)
 
         if self.status == 'warp_to_mine':
-            time.sleep(random.randint(60, 70))
+            time.sleep(random.randint(60, 61))
             self.neutral_minus_check()
             if self.minus or self.neutral:
                 self.to_dock()

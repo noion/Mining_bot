@@ -1,4 +1,5 @@
 import pyautogui
+import cv2 as cv
 
 STATION = 'img/station.png'
 STORAGE = 'img/station_storage.png'
@@ -8,7 +9,8 @@ NEUTRAL_GRAYSCALE = 'img/neutral_gray.png'
 FOOL_CARGO = 'img/cargo.jpg'
 FOOL_CARGO_WORDS = 'img/fool_cargo.bmp'
 EMPTY_BELT = 'img/empty_belt.bmp'
-SPEED = 'img/speed_check.png'
+SPEED_MAX = 'img/speed_check_max.png'
+SPEED_MIN = 'img/speed_check_min.png'
 MINERAL = 'img/miniral.png'
 LOCAL_ME = 'img/me_remove.png'
 LOCAL_EMPTY_GRAYSCALE = 'img/empty_local_gray.png'
@@ -36,7 +38,7 @@ MOVE_TO_STATION = (1200, 130, 180, 60)
 OVER_SELECTOR_BELT = (1670, 430, 120, 35)
 OVER_REWARP_BELT = (1660, 140, 120, 35)
 WARP_TO_1_POSITION = (1520, 140, 120, 50)
-SPEED_CHECK = (1390, 495, 60, 40)
+SPEED_CHECK = (1385, 495, 60, 40)
 CARGO_CHECK = (953, 108, 73, 38)
 DREEL_1 = (1540, 510, 40, 40)
 DREEL_2 = (1600, 510, 40, 40)
@@ -52,6 +54,9 @@ CARGO_SPAN = (980, 120, 30, 10)
 CLOACK = (1830, 510, 40)
 OVER_BUTTON = (1840, 330, 20)
 
-if __name__ == '__main__':
-    img = pyautogui.screenshot(region=(1052, 235, 140, 25))
-    img.save(r"img/me_remove.png")
+# if __name__ == '__main__':
+#     img = pyautogui.screenshot(region=SPEED_CHECK)
+#     img.save(r"../img/speed_check.png")
+#     img = cv.imread(r"../img/speed_check.png")
+#     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+#     cv.imwrite(r"../img/speed_check_max.png", img)

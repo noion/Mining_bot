@@ -25,6 +25,7 @@ from my_scripts import misc_func as mf
 SAVE_FILE = 'save.txt'
 
 q = Queue()
+q_telegram = Queue()
 template_width = 390
 template_height = 220
 
@@ -51,6 +52,23 @@ class Worker(QThread):
             except OSError as err:
                 print(f'sistem restart... : {err}')
                 check.local_check()
+
+
+# class WorkerTelegram(QThread):
+#     progress = pyqtSignal(str)
+#
+#     def __init__(self, parent=None):
+#         QThread.__init__(self, parent)
+#
+#     def run(self):
+#         self.progress.emit(f"Local check START")
+#         check = lc.MainLocalCheck(save_file=SAVE_FILE, starter=True, threads=True, queue=q)
+#         while True:
+#             try:
+#                 check.local_check()
+#             except OSError as err:
+#                 print(f'sistem restart... : {err}')
+#                 check.local_check()
 
 
 class Ui_MainWindow(object):
@@ -215,8 +233,12 @@ class Ui_MainWindow(object):
         self.self_remove.clicked.connect(self.remove_me)
 
         self.my_thread = Worker()
+        # self.telegram_thread = WorkerTelegram()
         self.start_button.clicked.connect(self.start_worker)
         self.stop_button.clicked.connect(self.stop_worker)
+
+
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -253,10 +275,9 @@ class Ui_MainWindow(object):
     def remove_me(self):
         if self.neutral_cord_y is not None:
             me = pyautogui.screenshot(region=(1057, int(self.neutral_cord_y) - 10, 140, 25))
-            me.save(r'img/shtrafnoy.png')
-            colib_me = cv.imread(r'img/shtrafnoy.png')
+            me.save(r'img/me_remove.png')
+            colib_me = cv.imread(r'img/me_remove.png')
             cv.imshow('Remove neutral', colib_me)
-            cv.waitKey(5)
             self.activity_view.setText("Look at screenshot, i remove him")
         else:
             self.activity_view.setText("Don't see you, show me in local")
@@ -296,6 +317,17 @@ class Ui_MainWindow(object):
         if self.my_thread.isFinished:
             self.activity_view.setText("Local check STOP...")
 
+    # def start_telegram(self):
+    #     self.my_thread.start()
+    #     # self.start_button.setEnabled(False)
+    #     if self.my_thread.isRunning:
+    #         self.activity_view.setText("Telegram bot START...")
+    #
+    # def stop_telegram(self):
+    #     self.my_thread.stop()
+    #     # self.start_button.setEnabled(True)
+    #     if self.my_thread.isFinished:
+    #         self.activity_view.setText("Telegram bot STOP...")
 
 def main():
     resiz_bg(template_width, template_height)
