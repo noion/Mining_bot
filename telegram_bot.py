@@ -41,12 +41,7 @@ def output_data(message):
         message('No data')
 
 
-def bot_process(queue):
+def bot_process():
     message("What's againe?", ['start'])
-    bot.polling(none_stop=True)
+    bot.polling()
 
-
-q = Queue()
-
-
-bot_process(queue=q)

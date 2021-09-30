@@ -64,7 +64,7 @@ class WorkerTelegram(QThread):
         QThread.__init__(self, parent)
 
     def run(self):
-        telegram_bot.bot_process(queue=q)
+        telegram_bot.bot_process()
 
 
 class Ui_MainWindow(object):
