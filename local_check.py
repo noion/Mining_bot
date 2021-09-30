@@ -105,7 +105,7 @@ class MainLocalCheck:
                 self.inforamtion_text()
         except FileNotFoundError:
             self.info({'info': 'NO SAVE'})
-            with open('save.txt', encoding='utf-8', mode='x') as save:
+            with open('save.txt', encoding='utf-8', mode='x') as _:
                 pass
             self.data_save()
 
@@ -167,7 +167,7 @@ class MainLocalCheck:
             local_allert = True
         return local_allert
 
-    def recheck_local(self, scroll_up=True, on_undock=False):
+    def recheck_local(self, scroll_up=True):
         flag = True
         self.recheck = False
         if self.minus or self.neutral:
@@ -245,12 +245,12 @@ class MainLocalCheck:
                 self.info({'info': f'Now mined {round(ore_mined, 2)} ore'})
                 self.extraction()
                 self.data_save()
-            self.recheck_local(scroll_up=False, on_undock=True)
+            self.recheck_local(scroll_up=False)
             self.inforamtion_text()
             if self.cargo == 'empty' and not self.recheck:
                 x, y = mf.rand_cords(UNDOCK)
                 mf.click(x, y)
-                time.sleep(random.randint(15, 20))
+                time.sleep(random.randint(10, 15))
                 self.status = 'idle'
                 self.recheck_local(scroll_up=False)
                 if self.minus or self.neutral:
@@ -295,13 +295,12 @@ class MainLocalCheck:
                 mf.click_queue([OVER_REWARP_BELT, WARP_TO_2_POSITION])
                 time.sleep(random.randint(60, 61))
                 self.drill_on()
-                self.status = 'mine'
                 self.info({'status': self.status})
 
                 self.data_save()
 
         if self.status == 'idle' and not self.minus:
-            self.recheck_local(scroll_up=False, on_undock=True)
+            self.recheck_local(scroll_up=False)
             self.status = 'warp_to_mine'
             if not self.over:
                 self.over = True
@@ -345,7 +344,6 @@ class MainLocalCheck:
 
 
 class pocess(Thread):
-
     def __init__(self, check, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.check = check

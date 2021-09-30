@@ -1,5 +1,4 @@
 import pyautogui
-import cv2 as cv
 
 STATION = 'img/station.png'
 STORAGE = 'img/station_storage.png'
@@ -59,4 +58,4 @@ OVER_BUTTON = (1840, 330, 20)
 #     img.save(r"../img/speed_check.png")
 #     img = cv.imread(r"../img/speed_check.png")
 #     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#     cv.imwrite(r"../img/speed_check_max.png", img)
+#     cv.imwrite(r"../img/speed_check.png", img)
