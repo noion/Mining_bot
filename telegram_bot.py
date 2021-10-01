@@ -2,7 +2,7 @@ from bot_token import token
 from queue import Queue
 import telebot
 
-V_TB = 0.01
+V_TB = 'v0.01'
 
 bot = telebot.TeleBot(token)
 

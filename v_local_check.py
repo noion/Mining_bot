@@ -87,13 +87,17 @@ class Ui_MainWindow(object):
                             "font-weight: bold")
 
         self.v_local_check = QtWidgets.QLabel(self.centralwidget)
-        self.v_local_check.setGeometry(QtCore.QRect(270, 0, 120, 16))
+        self.v_local_check.setGeometry(QtCore.QRect(150, 0, 120, 16))
         self.v_local_check.setObjectName("v_local_check")
         self.v_local_check.setStyleSheet(text_style_sheet)
         self.v_qt = QtWidgets.QLabel(self.centralwidget)
-        self.v_qt.setGeometry(QtCore.QRect(270, 20, 120, 16))
+        self.v_qt.setGeometry(QtCore.QRect(270, 0, 120, 16))
         self.v_qt.setObjectName("v_qt")
         self.v_qt.setStyleSheet(text_style_sheet)
+        self.v_tb = QtWidgets.QLabel(self.centralwidget)
+        self.v_tb.setGeometry(QtCore.QRect(270, 20, 120, 16))
+        self.v_tb.setObjectName("v_tb")
+        self.v_tb.setStyleSheet(text_style_sheet)
 
         self.label_status = QtWidgets.QLabel(self.centralwidget)
         self.label_status.setGeometry(QtCore.QRect(20, 40, 41, 16))
@@ -197,6 +201,7 @@ class Ui_MainWindow(object):
         self.frame.raise_()
         self.v_local_check.raise_()
         self.v_qt.raise_()
+        self.v_tb.raise_()
 
         self.label_status.raise_()
         self.status_info.raise_()
@@ -249,7 +254,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MinerBot"))
 
         self.v_local_check.setText((_translate("MainWindow", f"Local check: {lc.V_LC}")))
-        self.v_qt.setText((_translate("MainWindow", f"Interface {V_QT}")))
+        self.v_qt.setText((_translate("MainWindow", f"Interface: {V_QT}")))
+        self.v_tb.setText((_translate("MainWindow", f"Telegram bot: {telegram_bot.V_TB}")))
 
         self.label_status.setText(_translate("MainWindow", "Status"))
         self.start_button.setText(_translate("MainWindow", "Start"))
