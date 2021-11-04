@@ -11,18 +11,18 @@
 # pyinstaller --onefile -w -i "E:\Python\Mining_bot\img\ico.ico" v_local_check.py
 
 
-V_QT = 'v0.13'
+V_QT = 'v0.14'
 
 import sys
 
 import pyautogui
+import cv2 as cv
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer, QThread, pyqtSignal
 from queue import Queue
 from PIL import Image, ImageDraw, ImageFont, ImageColor
-import cv2 as cv
 import local_check as lc
-from my_scripts import misc_func as mf
+from my_scripts import coords_and_img as ci
 import telegram_bot
 
 SAVE_FILE = 'save.txt'
@@ -107,7 +107,7 @@ class Ui_MainWindow(object):
         self.start_button.setGeometry(QtCore.QRect(300, 140, 71, 23))
         self.start_button.setObjectName("start_button")
         self.start_telegram = QtWidgets.QPushButton(self.centralwidget)
-        self.start_telegram.setGeometry(QtCore.QRect(300, 107, 71, 23))
+        self.start_telegram.setGeometry(QtCore.QRect(225, 173, 71, 23))
         self.start_telegram.setObjectName("start_telegram")
         self.stop_button = QtWidgets.QPushButton(self.centralwidget)
         self.stop_button.setGeometry(QtCore.QRect(300, 173, 71, 23))
@@ -115,9 +115,6 @@ class Ui_MainWindow(object):
         self.local_cloib = QtWidgets.QPushButton(self.centralwidget)
         self.local_cloib.setGeometry(QtCore.QRect(225, 140, 71, 23))
         self.local_cloib.setObjectName("local_cloib")
-        self.self_remove = QtWidgets.QPushButton(self.centralwidget)
-        self.self_remove.setGeometry(QtCore.QRect(225, 173, 71, 23))
-        self.self_remove.setObjectName("self_remove")
         self.station_screenshot = QtWidgets.QPushButton(self.centralwidget)
         self.station_screenshot.setGeometry(QtCore.QRect(150, 140, 71, 23))
         self.station_screenshot.setObjectName("dock_button")
@@ -222,7 +219,7 @@ class Ui_MainWindow(object):
         self.stop_button.raise_()
         self.station_screenshot.raise_()
         self.local_cloib.raise_()
-        self.self_remove.raise_()
+
         self.start_telegram.raise_()
         MainWindow.setStatusBar(self.statusbar)
 
@@ -231,12 +228,11 @@ class Ui_MainWindow(object):
 
         self.timer = QTimer()
         self.timer.setInterval(3000)
-        self.timer.timeout.connect(self.add_fuction)
+        self.timer.timeout.connect(self.read_data)
         self.timer.start()
 
         self.station_screenshot.clicked.connect(self.station_screen)
-        self.local_cloib.clicked.connect(mf.colibrate_local)
-        self.self_remove.clicked.connect(self.remove_me)
+        self.local_cloib.clicked.connect(self.colibrate_local)
 
         self.my_thread = Worker()
         self.start_button.clicked.connect(self.start_worker)
@@ -244,10 +240,6 @@ class Ui_MainWindow(object):
 
         self.telegram_thread = WorkerTelegram()
         self.start_telegram.clicked.connect(self.start_telegram_thread)
-
-
-
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -262,7 +254,6 @@ class Ui_MainWindow(object):
         self.start_telegram.setText(_translate("MainWindow", "Telegram bot"))
         self.stop_button.setText(_translate("MainWindow", "Stop"))
         self.local_cloib.setText(_translate("MainWindow", "Colibrate"))
-        self.self_remove.setText(_translate("MainWindow", "Self remove"))
         self.station_screenshot.setText(_translate("MainWindow", "Station screen"))
         self.status_info.setText(_translate("MainWindow", "None"))
         self.minus_info.setText(_translate("MainWindow", "None"))
@@ -283,17 +274,32 @@ class Ui_MainWindow(object):
         img = pyautogui.screenshot(region=(1730, 200, 150, 80))
         img.save(r'img/station.png')
 
-    def remove_me(self):
-        if self.neutral_cord_y is not None:
-            me = pyautogui.screenshot(region=(1057, int(self.neutral_cord_y) - 10, 140, 25))
-            me.save(r'img/me_remove.png')
-            colib_me = cv.imread(r'img/me_remove.png')
-            cv.imshow('Remove neutral', colib_me)
-            self.activity_view.setText("Look at screenshot, i remove him")
-        else:
-            self.activity_view.setText("Don't see you, show me in local")
+    def colibrate_local(add_greed=True):
+        img = pyautogui.screenshot(region=ci.RIGHT_PART_SCREEN)
+        img.save(r'img/target_img.png')
+        img_cv = cv.imread(r'img/target_img.png')
+        if add_greed:
+            x, y, w, h = ci.RIGHT_PART_SCREEN
+            x_r, y_r, w_r, h_r = ci.NEW_LOCAL_RELATIONS
+            x_m, y_m, w_m, h_m = ci.NEW_LOCAL_RELATIONS_MINUS
+            x_n, y_n, w_n, h_n = ci.NEW_LOCAL_RELATIONS_NEUTRAL
+            x_cor_r = x_r - x
+            y_cor_r = y_r - y
+            relation_cv = cv.rectangle(img_cv, (x_cor_r, y_cor_r), (x_cor_r + w_r, y_cor_r + h_r), (0, 0, 255),
+                                       thickness=1)
+            x_cor_m = x_m - x
+            y_cor_m = y_m - y
+            minus_cv = cv.rectangle(relation_cv, (x_cor_m, y_cor_m), (x_cor_m + w_m, y_cor_m + h_m), (0, 255, 0),
+                                    thickness=1)
+            x_cor_n = x_n - x
+            y_cor_n = y_n - y
+            neutral_cv = cv.rectangle(minus_cv, (x_cor_n, y_cor_n), (x_cor_n + w_n, y_cor_n + h_n), (0, 255, 0),
+                                      thickness=1)
+            main_window = cv.rectangle(neutral_cv, (27, 0), (967, 570), (0, 255, 0), thickness=1)
+            cv.imshow('img', main_window)
+            cv.waitKey(0)
 
-    def add_fuction(self):
+    def read_data(self):
         while len(q.queue) > 0:
             info = q.get()
             if self.pull_num == info['pull_num']:
@@ -322,8 +328,6 @@ class Ui_MainWindow(object):
                 elif name == 'neutral_y':
                     self.neutral_cord_y = value
 
-
-
     def start_worker(self):
         self.my_thread.start()
         self.start_button.setEnabled(False)
@@ -350,7 +354,7 @@ def main():
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    ui.add_fuction()
+    ui.read_data()
     sys.exit(app.exec_())
 
 

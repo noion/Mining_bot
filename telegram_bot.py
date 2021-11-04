@@ -1,15 +1,20 @@
 from bot_token import token
-from queue import Queue
-import telebot
+from my_scripts import misc_func as mf
+from telebot import TeleBot, types
 
-V_TB = 'v0.01'
+V_TB = 'v0.03'
 
-bot = telebot.TeleBot(token)
+bot = TeleBot(token)
+
+kb = types.ReplyKeyboardMarkup(True)
+kb.row('/screen', '/info')
+
 
 def message(text, commands=None):
     @bot.message_handler(commands=commands)
     def send_message(message):
         bot.send_message(message.chat.id, text)
+
 
 @bot.message_handler(commands=['info'])
 def output_data(message):
@@ -34,14 +39,25 @@ def output_data(message):
             # else:
             #     bot.send_message(message.chat.id, "Записей нет")
 
+        line = ''
         for name, value in data.items():
-            line = f'{name} : {value}'
-            bot.send_message(message.chat.id, line)
+            line += f'{name} : {value}\n'
+
+        bot.send_message(message.chat.id, line)
     except FileNotFoundError:
         message('No data')
 
 
-def bot_process():
-    message("What's againe?", ['start'])
-    bot.polling()
+@bot.message_handler(commands=['screen'])
+def output_data(message):
+    mf.screen_shot()
+    bot.send_photo(message.chat.id, photo=open(f'img/target_img.png', 'rb'))
 
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_photo(message.chat.id, photo=open(f'img/bg.png', 'rb'), reply_markup=kb)
+
+
+def bot_process():
+    bot.polling()

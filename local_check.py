@@ -1,15 +1,13 @@
 import pyautogui
 import time
 import random
-import win32api
-import win32con
 import pygame
 from threading import Thread
 from queue import Queue
 from my_scripts.coords_and_img import *
 from my_scripts import misc_func as mf
 
-V_LC = 'v0.37b'
+V_LC = 'v0.4'
 pygame.mixer.init()
 SAVE_FILE = 'save.txt'
 q = Queue()
@@ -36,6 +34,10 @@ class MainLocalCheck:
         self.queue = queue
         self.neutral_cord_y = None
         self.pull_num = 1
+
+    '''
+    information block
+    '''
 
     def info(self, text):
         if not self.threads:
@@ -67,6 +69,10 @@ class MainLocalCheck:
             self.info({'drill_status': self.drill_status})
             self.info({'ore': ore})
             self.info({'neutral_y': self.neutral_cord_y})
+
+    '''
+    save-load block
+    '''
 
     def data_save(self):
         data = {'time_start': self.time_start, 'time_stop': self.time_stop, 'ore': self.ore, 'status': self.status,
@@ -112,6 +118,10 @@ class MainLocalCheck:
                 pass
             self.data_save()
 
+    '''
+    actions block
+    '''
+
     def drill_on(self):
         self.status = 'mine'
         self.drill_status = True
@@ -121,77 +131,21 @@ class MainLocalCheck:
         mf.click_queue([DREEL_1, DREEL_2, DREEL_3])
 
     def neutral_minus_check(self):
-        try:
-            if self.status == 'warp_to_dock':
-                pass
-            if pyautogui.locateOnScreen(RED_MINUS, region=RIGHT_LOCAL_RELATION, confidence=0.75) is not None:
-                self.minus = True
-                self.info({'minus': self.minus})
-                return
-            else:
-                self.minus = False
-            neut_check = []
-            y = None
-            for _ in range(2):
-                neutral = pyautogui.locateOnScreen(NEUTRAL_GRAYSCALE, region=RIGHT_LOCAL_RELATION, confidence=0.75,
-                                                   grayscale=True)
-                if neutral is not None:
-                    x, y = pyautogui.center(neutral)
-                    self.neutral_cord_y = y
-                    if pyautogui.locateOnScreen(LOCAL_ME, region=(1057, y - 10, 140, 25), confidence=0.75) is not None \
-                            or pyautogui.locateOnScreen(LOCAL_EMPTY_GRAYSCALE, region=(1045, y - 10, 140, 30),
-                                                        confidence=0.75, grayscale=True) is not None:
-                        neut_check.append(False)
-                    else:
-                        neut_check.append(True)
-                    time.sleep(2)
-            if len(neut_check) == 2 and False not in neut_check:
-                self.neutral = True
-                self.info({'neutral': self.neutral})
-                self.info({'neutral_y': self.neutral_cord_y})
-                pyautogui.screenshot(region=(1057, y - 10, 140, 25)).save('img/i_see.png')
-
-                return
-            else:
-                self.neutral = False
-                self.neutral_cords = None
-        except Exception as err:
-            print(err)
-
-    def local_scroll(self):
-        local_allert = False
-        x = random.randint(1090, 1120)
-        y = random.randint(300, 340)
-        win32api.SetCursorPos((x, y))
-        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -150)
-        time.sleep(3)
-        self.neutral_minus_check()
-        if self.neutral or self.minus:
-            local_allert = True
-        return local_allert
-
-    def recheck_local(self, scroll_up=True):
-        flag = True
-        self.recheck = False
-        if self.minus or self.neutral:
-            self.info({'info': "still minus, let's wait..."})
-            time.sleep(20)
-        if scroll_up:
-            mf.local_scroll_up()
-        while flag:
-            local_allert = self.local_scroll()
-            if local_allert:
-                self.recheck = True
-            if local_allert:
-                if self.status == 'idle':
-                    return
-                while self.neutral or self.minus:
-                    self.neutral_minus_check()
-            if pyautogui.locateOnScreen(LOCAL_PREW, region=RIGHT_LOCAL, confidence=0.7) is not None:
-                if local_allert:
-                    self.recheck = True
-                flag = False
-            pyautogui.screenshot(region=RIGHT_LOCAL).save(r'img/local_prew.png')
+        if self.status == 'warp_to_dock':
+            pass
+        elif pyautogui.locateOnScreen(NEW_LOCAL_ZERO, region=NEW_LOCAL_RELATIONS_MINUS, confidence=0.75,
+                                      grayscale=True) is None:
+            self.minus = True
+            self.info({'minus': self.minus})
+            return
+        elif pyautogui.locateOnScreen(NEW_LOCAL_ZERO, region=NEW_LOCAL_RELATIONS_NEUTRAL, confidence=0.75,
+                                      grayscale=True) is None:
+            self.neutral = True
+            self.info({'neutral': self.neutral})
+            return
+        else:
+            self.minus = False
+            self.neutral = False
 
     def start_check(self):
         self.data_load()
@@ -228,6 +182,10 @@ class MainLocalCheck:
                  CLOSE_WINDOW])
             self.cargo = 'empty'
 
+    '''
+    logic block
+    '''
+
     def in_station(self):
         if pyautogui.locateOnScreen(STATION, region=STATION_SCREEN, confidence=0.8) is not None:
             time.sleep(4)
@@ -236,7 +194,7 @@ class MainLocalCheck:
             time.sleep(5)
             if self.cargo == 'fool':
                 time_ = round(self.time_stop - self.time_start)
-                ore_mined = 3 * (time_ * 21.91 + time_ * 26.415)
+                ore_mined = 3 * (time_ * 29.53 + time_ * 30.59)
                 self.ore += ore_mined
                 if self.ore < 1000000:
                     calc = str(round(self.ore // 1000))
@@ -248,14 +206,14 @@ class MainLocalCheck:
                 self.info({'info': f'Now mined {round(ore_mined, 2)} ore'})
                 self.extraction()
                 self.data_save()
-            self.recheck_local(scroll_up=False)
+            self.neutral_minus_check()
             self.inforamtion_text()
             if self.cargo == 'empty' and not self.recheck:
                 x, y = mf.rand_cords(UNDOCK)
                 mf.click(x, y)
                 time.sleep(random.randint(10, 15))
                 self.status = 'idle'
-                self.recheck_local(scroll_up=False)
+                self.neutral_minus_check()
                 if self.minus or self.neutral:
                     self.to_dock()
             else:
@@ -303,7 +261,7 @@ class MainLocalCheck:
                 self.data_save()
 
         if self.status == 'idle' and not self.minus:
-            self.recheck_local(scroll_up=False)
+            self.neutral_minus_check()
             self.status = 'warp_to_mine'
             if not self.over:
                 self.over = True
@@ -322,6 +280,10 @@ class MainLocalCheck:
                 self.data_save()
             self.drill_on()
             self.data_save()
+
+    '''
+    assembly block
+    '''
 
     def local_check(self):
         while True:

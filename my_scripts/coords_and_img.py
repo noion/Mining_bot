@@ -1,34 +1,29 @@
-import pyautogui
-
 STATION = 'img/station.png'
 STORAGE = 'img/station_storage.png'
 STORAGE_P = 'img/station_storage_p.png'
-RED_MINUS = 'img/red.png'
-NEUTRAL_GRAYSCALE = 'img/neutral_gray.png'
 FOOL_CARGO = 'img/cargo.jpg'
 FOOL_CARGO_WORDS = 'img/fool_cargo.bmp'
 EMPTY_BELT = 'img/empty_belt.bmp'
 SPEED_MAX = 'img/speed_check_max.png'
 SPEED_MIN = 'img/speed_check_min.png'
-MINERAL = 'img/miniral.png'
-LOCAL_ME = 'img/me_remove.png'
-LOCAL_EMPTY_GRAYSCALE = 'img/empty_local_gray.png'
-LOCAL_PREW = 'img/local_prew.png'
-LOCAL_UP_PREW = 'img/local_up_prew.png'
+NEW_LOCAL_ZERO = 'img/zero.png'
 ALL_SCREEN = (0, 0, 1830, 510)
 RIGHT_LOCAL = (1045, 200, 180, 200)
 RIGHT_LOCAL_NAME = (1045, 200, 140, 200)
 RIGHT_LOCAL_RELATION = (1195, 200, 30, 200)
+NEW_LOCAL_RELATIONS = (1045, 400, 160, 40)
+NEW_LOCAL_RELATIONS_MINUS = (1045, 400, 40, 40)
+NEW_LOCAL_RELATIONS_NEUTRAL = (1165, 400, 40, 40)
 RIGHT_PART_SCREEN = (915, 0, 990, 600)
-MY_OVER =(1840, 330, 20, 20)
-OVER_SELECTOR = (1670,45,120,35)
-OVER_SELECTOR_STATION = (1670,220,120,35)
-OVER_STATION = (1660,85,120,35)
-STATION_STORAGE_ORE = (965,260,170,50)
-GO_DOCK = (1520,85,120,40)
+MY_OVER = (1840, 330, 20, 20)
+OVER_SELECTOR = (1670, 45, 120, 35)
+OVER_SELECTOR_STATION = (1670, 220, 120, 35)
+OVER_STATION = (1660, 85, 120, 35)
+STATION_STORAGE_ORE = (965, 260, 170, 50)
+GO_DOCK = (1520, 85, 120, 40)
 STATION_SCREEN = (1730, 200, 150, 80)
-UNDOCK = (1730,200,150,50)
-RIGHT_CARGO = (955,110,68,30)
+UNDOCK = (1730, 200, 150, 50)
+RIGHT_CARGO = (955, 110, 68, 30)
 MY_STORAGE = (955, 150, 150, 50)
 MY_STORAGE_CLOSE = (960, 100, 150, 30)
 SELECT_ALL = (1640, 490, 65, 65)
@@ -54,8 +49,8 @@ CLOACK = (1830, 510, 40)
 OVER_BUTTON = (1840, 330, 20)
 
 # if __name__ == '__main__':
-#     img = pyautogui.screenshot(region=SPEED_CHECK)
-#     img.save(r"../img/speed_check.png")
-#     img = cv.imread(r"../img/speed_check.png")
+#     img = pyautogui.screenshot(region=NEW_LOCAL_RELATIONS)
+#     img.save(r"../img/new_local.png")
+#     img = cv.imread(r"../img/new_local.png")
 #     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#     cv.imwrite(r"../img/speed_check.png", img)
+#     cv.imwrite(r"../img/new_local.png", img)
