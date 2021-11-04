@@ -18,7 +18,6 @@ class MainLocalCheck:
     def __init__(self, save_file, starter, threads, queue=None):
         self.save_file = save_file
         self.windows = 0
-        self.recheck = False
         self.starter = starter
         self.over = False
         self.status_belt_1 = True
@@ -32,7 +31,6 @@ class MainLocalCheck:
         self.time_stop = 0
         self.threads = threads
         self.queue = queue
-        self.neutral_cord_y = None
         self.pull_num = 1
 
     '''
@@ -68,7 +66,6 @@ class MainLocalCheck:
             self.info({'cargo': self.cargo})
             self.info({'drill_status': self.drill_status})
             self.info({'ore': ore})
-            self.info({'neutral_y': self.neutral_cord_y})
 
     '''
     save-load block
@@ -132,20 +129,22 @@ class MainLocalCheck:
 
     def neutral_minus_check(self):
         if self.status == 'warp_to_dock':
-            pass
-        elif pyautogui.locateOnScreen(NEW_LOCAL_ZERO, region=NEW_LOCAL_RELATIONS_MINUS, confidence=0.75,
-                                      grayscale=True) is None:
+            return
+        if pyautogui.locateOnScreen(NEW_LOCAL_ZERO, region=NEW_LOCAL_RELATIONS_MINUS, confidence=0.75,
+                                    grayscale=True) is None:
             self.minus = True
             self.info({'minus': self.minus})
             return
-        elif pyautogui.locateOnScreen(NEW_LOCAL_ZERO, region=NEW_LOCAL_RELATIONS_NEUTRAL, confidence=0.75,
-                                      grayscale=True) is None:
+        else:
+            self.minus = False
+        if pyautogui.locateOnScreen(NEW_LOCAL_ZERO, region=NEW_LOCAL_RELATIONS_NEUTRAL, confidence=0.75,
+                                    grayscale=True) is None:
             self.neutral = True
             self.info({'neutral': self.neutral})
             return
         else:
-            self.minus = False
             self.neutral = False
+
 
     def start_check(self):
         self.data_load()
@@ -207,8 +206,11 @@ class MainLocalCheck:
                 self.extraction()
                 self.data_save()
             self.neutral_minus_check()
-            self.inforamtion_text()
-            if self.cargo == 'empty' and not self.recheck:
+            while self.neutral or self.minus:
+                time.sleep(3)
+                self.neutral_minus_check()
+                self.inforamtion_text()
+            if self.cargo == 'empty':
                 x, y = mf.rand_cords(UNDOCK)
                 mf.click(x, y)
                 time.sleep(random.randint(10, 15))
@@ -216,8 +218,7 @@ class MainLocalCheck:
                 self.neutral_minus_check()
                 if self.minus or self.neutral:
                     self.to_dock()
-            else:
-                mf.local_scroll_up()
+
 
     def in_space_check(self):
         self.neutral_minus_check()
