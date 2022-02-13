@@ -212,8 +212,7 @@ class MainLocalCheck:
                 self.data_save()
                 self.inforamtion_text()
             if self.cargo == 'empty':
-                x, y = mf.rand_cords(UNDOCK)
-                mf.click(x, y)
+                mf.click_queue([UNDOCK])
                 time.sleep(random.randint(18, 20))
                 self.status = 'idle'
                 self.neutral_minus_check()
