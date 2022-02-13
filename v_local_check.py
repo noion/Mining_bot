@@ -45,16 +45,15 @@ class Worker(QThread):
 
     def __init__(self, parent=None):
         QThread.__init__(self, parent)
+        self.run_local_check = True
 
     def run(self):
-        self.progress.emit(f"Local check START")
+        if not self.run_local_check:
+            self.run_local_check = True
+        self.progress.emit(f"Local check STARTED")
         check = lc.MainLocalCheck(save_file=SAVE_FILE, starter=True, threads=True, queue=q)
-        while True:
-            try:
-                check.local_check()
-            except OSError as err:
-                print(f'sistem restart... : {err}')
-                check.local_check()
+        while self.run_local_check:
+            check.local_check()
 
 
 class WorkerTelegram(QThread):
@@ -268,7 +267,7 @@ class Ui_MainWindow(object):
         self.drill_status.setText(_translate("MainWindow", "Drill status"))
         self.ore_info.setText(_translate("MainWindow", "None"))
         self.ore_mined.setText(_translate("MainWindow", "Ore mined"))
-        self.activity_view.setText(_translate("MainWindow", "Local check STOP..."))
+        self.activity_view.setText(_translate("MainWindow", "Local check STOPPED..."))
 
     def station_screen(self):
         img = pyautogui.screenshot(region=(1730, 200, 150, 80))
@@ -332,19 +331,20 @@ class Ui_MainWindow(object):
         self.my_thread.start()
         self.start_button.setEnabled(False)
         if self.my_thread.isRunning:
-            self.activity_view.setText("Local check START...")
+            self.activity_view.setText("Local check STARTED...")
 
     def stop_worker(self):
         self.my_thread.stop()
         self.start_button.setEnabled(True)
         if self.my_thread.isFinished:
-            self.activity_view.setText("Local check STOP...")
+            self.activity_view.setText("Local check STOPPED...")
+        print(self.my_thread.run_local_check)
 
     def start_telegram_thread(self):
         self.telegram_thread.start()
         self.start_telegram.setEnabled(False)
         if self.telegram_thread.isRunning:
-            self.activity_view.setText("Telegram bot START...")
+            self.activity_view.setText("Telegram bot STARTED...")
 
 
 def main():

@@ -2,7 +2,6 @@ import random
 import win32api, win32con
 import time
 import pyautogui
-import cv2 as cv
 import my_scripts.coords_and_img as ci
 
 
@@ -27,7 +26,7 @@ def click_queue(queue_list):
     for cords in queue_list:
         x, y = rand_cords(cords)
         click(x, y)
-        time.sleep(random.randint(1, 2))
+        time.sleep(random.randint(2, 2))
 
 
 def screen_shot():

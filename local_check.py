@@ -7,7 +7,7 @@ from queue import Queue
 from my_scripts.coords_and_img import *
 from my_scripts import misc_func as mf
 
-V_LC = 'v0.4'
+V_LC = 'v0.41'
 pygame.mixer.init()
 SAVE_FILE = 'save.txt'
 q = Queue()
@@ -17,7 +17,6 @@ class MainLocalCheck:
 
     def __init__(self, save_file, starter, threads, queue=None):
         self.save_file = save_file
-        self.windows = 0
         self.starter = starter
         self.over = False
         self.status_belt_1 = True
@@ -134,6 +133,7 @@ class MainLocalCheck:
                                     grayscale=True) is None:
             self.minus = True
             self.info({'minus': self.minus})
+            self.data_save()
             return
         else:
             self.minus = False
@@ -141,10 +141,10 @@ class MainLocalCheck:
                                     grayscale=True) is None:
             self.neutral = True
             self.info({'neutral': self.neutral})
+            self.data_save()
             return
         else:
             self.neutral = False
-
 
     def start_check(self):
         self.data_load()
@@ -209,16 +209,16 @@ class MainLocalCheck:
             while self.neutral or self.minus:
                 time.sleep(3)
                 self.neutral_minus_check()
+                self.data_save()
                 self.inforamtion_text()
             if self.cargo == 'empty':
                 x, y = mf.rand_cords(UNDOCK)
                 mf.click(x, y)
-                time.sleep(random.randint(10, 15))
+                time.sleep(random.randint(18, 20))
                 self.status = 'idle'
                 self.neutral_minus_check()
                 if self.minus or self.neutral:
                     self.to_dock()
-
 
     def in_space_check(self):
         self.neutral_minus_check()
@@ -309,7 +309,7 @@ class MainLocalCheck:
         self.local_check()
 
 
-class pocess(Thread):
+class process(Thread):
     def __init__(self, check, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.check = check
@@ -325,5 +325,5 @@ class pocess(Thread):
 
 if __name__ == '__main__':
     check = MainLocalCheck(save_file=SAVE_FILE, starter=True, threads=False)
-    start = pocess(check)
+    start = process(check)
     start.run()

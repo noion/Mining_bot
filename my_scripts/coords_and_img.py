@@ -8,6 +8,7 @@ SPEED_MAX = 'img/speed_check_max.png'
 SPEED_MIN = 'img/speed_check_min.png'
 NEW_LOCAL_ZERO = 'img/zero.png'
 ALL_SCREEN = (0, 0, 1830, 510)
+LOCAL_BUTTON = (950, 465, 60, 20)
 RIGHT_LOCAL = (1045, 200, 180, 200)
 RIGHT_LOCAL_NAME = (1045, 200, 140, 200)
 RIGHT_LOCAL_RELATION = (1195, 200, 30, 200)
@@ -25,7 +26,7 @@ STATION_SCREEN = (1730, 200, 150, 80)
 UNDOCK = (1730, 200, 150, 50)
 RIGHT_CARGO = (955, 110, 68, 30)
 MY_STORAGE = (955, 150, 150, 50)
-MY_STORAGE_CLOSE = (960, 100, 150, 30)
+MY_STORAGE_CLOSE = (955, 110, 130, 30)
 SELECT_ALL = (1640, 490, 65, 65)
 MOVE_CARGO_TO = (965, 120, 180, 60)
 MOVE_TO_STATION = (1200, 130, 180, 60)
@@ -48,9 +49,8 @@ CARGO_SPAN = (980, 120, 30, 10)
 CLOACK = (1830, 510, 40)
 OVER_BUTTON = (1840, 330, 20)
 
-# if __name__ == '__main__':
-#     img = pyautogui.screenshot(region=NEW_LOCAL_RELATIONS)
-#     img.save(r"../img/new_local.png")
-#     img = cv.imread(r"../img/new_local.png")
-#     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#     cv.imwrite(r"../img/new_local.png", img)
+if __name__ == '__main__':
+    import pyautogui
+
+    img = pyautogui.screenshot(region=LOCAL_BUTTON)
+    img.show('test')
