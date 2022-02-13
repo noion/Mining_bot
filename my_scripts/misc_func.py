@@ -1,5 +1,4 @@
 import random
-import win32api, win32con
 import time
 import pyautogui
 import my_scripts.coords_and_img as ci
@@ -16,16 +15,10 @@ def rand_cords(range):
     return point_x, point_y
 
 
-def click(x, y):
-    win32api.SetCursorPos((x, y))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-
-
 def click_queue(queue_list):
     for cords in queue_list:
         x, y = rand_cords(cords)
-        click(x, y)
+        pyautogui.leftClick(x, y)
         time.sleep(random.randint(2, 2))
 
 
