@@ -287,10 +287,10 @@ class MainLocalCheck:
 
     def local_check(self):
         while True:
-            status_prew = self.status
-            minus_prew = self.minus
-            neutral_prew = self.neutral
-            drill = self.drill_status
+            status_previous = self.status
+            minus_previous = self.minus
+            neutral_previous = self.neutral
+            drill_previous = self.drill_status
             if self.starter:
                 self.start_check()
             while self.status in ['dock', 'warp_to_dock']:
@@ -298,7 +298,7 @@ class MainLocalCheck:
 
             while self.status in ['warp_to_mine', 'mine', 'idle']:
                 self.in_space_check()
-            if status_prew != self.status or minus_prew != self.minus or neutral_prew != self.neutral or drill != self.drill_status:
+            if status_previous != self.status or minus_previous != self.minus or neutral_previous != self.neutral or drill_previous != self.drill_status:
                 self.information_text()
 
     def func_for_tread(self):
