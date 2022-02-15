@@ -319,7 +319,7 @@ class process(Thread):
             try:
                 self.check.local_check()
             except OSError as err:
-                print(f'sistem restart... : {err}')
+                print(f'system restart... : {err}')
                 self.run()
 
 
