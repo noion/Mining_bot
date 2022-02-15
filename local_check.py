@@ -310,9 +310,9 @@ class MainLocalCheck:
 
 
 class process(Thread):
-    def __init__(self, check, *args, **kwargs):
+    def __init__(self, init_check, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.check = check
+        self.check = init_check
 
     def run(self):
         while True:
