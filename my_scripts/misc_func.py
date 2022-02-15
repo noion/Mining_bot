@@ -4,10 +4,10 @@ import pyautogui
 import my_scripts.coords_and_img as ci
 
 
-def rand_cords(range):
-    x, y, max_x = range[0], range[1], range[2]
+def rand_cords(cords):
+    x, y, max_x = cords[0], cords[1], cords[2]
     try:
-        max_y = range[3]
+        max_y = cords[3]
     except IndexError:
         max_y = max_x
     point_x = random.randint(x, x + round(max_x / 2))
