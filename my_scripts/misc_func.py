@@ -19,7 +19,7 @@ def click_queue(queue_list):
     for cords in queue_list:
         x, y = rand_cords(cords)
         pyautogui.leftClick(x, y)
-        time.sleep(random.randint(2, 2))
+        time.sleep(2)
 
 
 def screen_shot():
