@@ -45,7 +45,7 @@ class MainLocalCheck:
             self.queue.put(text)
             self.pull_num += 1
 
-    def inforamtion_text(self):
+    def information_text(self):
         if not self.threads:
 
             self.info({'info': f''''time = {time.ctime()}
@@ -107,7 +107,7 @@ class MainLocalCheck:
                         self.ore += ore_mined
                         self.extraction()
                         self.data_save()
-                self.inforamtion_text()
+                self.information_text()
         except FileNotFoundError:
             self.info({'info': 'NO SAVE'})
             with open('save.txt', encoding='utf-8', mode='x') as _:
@@ -210,7 +210,7 @@ class MainLocalCheck:
                 time.sleep(3)
                 self.neutral_minus_check()
                 self.data_save()
-                self.inforamtion_text()
+                self.information_text()
             if self.cargo == 'empty':
                 mf.click_queue([UNDOCK])
                 time.sleep(random.randint(18, 20))
@@ -299,7 +299,7 @@ class MainLocalCheck:
             while self.status in ['warp_to_mine', 'mine', 'idle']:
                 self.in_space_check()
             if status_prew != self.status or minus_prew != self.minus or neutral_prew != self.neutral or drill != self.drill_status:
-                self.inforamtion_text()
+                self.information_text()
 
     def func_for_tread(self):
         self.starter = False
