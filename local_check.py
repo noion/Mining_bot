@@ -54,10 +54,10 @@ class MainLocalCheck:
         else:
             if self.ore < 1000000:
                 calc = str(round(self.ore // 1000))
-                ore = (f'{calc} k')
+                ore = f'{calc} k'
             else:
                 calc = str(round(self.ore / 1000000, 2))
-                ore = (f'{calc} kk')
+                ore = f'{calc} kk'
             self.info({'status': self.status})
             self.info({'minus': self.minus})
             self.info({'neutral': self.neutral})
