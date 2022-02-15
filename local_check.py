@@ -298,7 +298,8 @@ class MainLocalCheck:
 
             while self.status in ['warp_to_mine', 'mine', 'idle']:
                 self.in_space_check()
-            if status_previous != self.status or minus_previous != self.minus or neutral_previous != self.neutral or drill_previous != self.drill_status:
+            if status_previous != self.status or minus_previous != self.minus or neutral_previous != self.neutral or \
+                    drill_previous != self.drill_status:
                 self.information_text()
 
     def func_for_tread(self):
