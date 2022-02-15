@@ -1,4 +1,3 @@
-import pyautogui
 from bot_token import token
 from telebot import TeleBot, types
 import time
@@ -101,7 +100,7 @@ def pause(message):
     x, y, x1, y1 = LOCAL_BUTTON
     x = x + x1 // 2
     y = y + y1 // 2
-    pyautogui.leftClick(x, y)
+    mf.click_queue([x, y])
 
 
 def bot_process():
