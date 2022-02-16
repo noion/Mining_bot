@@ -61,7 +61,6 @@ def output_data(message):
 def output_data(message):
     global checking
     checking = True
-    timer = 5
     bot.send_message(message.chat.id, 'START CHECKING', reply_markup=kb_checking)
     while checking:
         data = {'status': 'None',
