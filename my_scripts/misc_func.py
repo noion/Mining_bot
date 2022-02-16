@@ -4,7 +4,7 @@ import pyautogui
 import my_scripts.coords_and_img as ci
 
 
-def rand_cords(cords):
+def rand_cords(cords: []):
     x, y, max_x = cords[0], cords[1], cords[2]
     try:
         max_y = cords[3]
@@ -15,7 +15,7 @@ def rand_cords(cords):
     return point_x, point_y
 
 
-def click_queue(queue_list):
+def click_queue(queue_list: [[]]):
     for cords in queue_list:
         x, y = rand_cords(cords)
         pyautogui.leftClick(x, y)
