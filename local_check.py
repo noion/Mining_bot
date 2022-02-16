@@ -45,7 +45,7 @@ class MainLocalCheck:
             self.queue.put(text)
             self.pull_num += 1
 
-    def inforamtion_text(self):
+    def information_text(self):
         if not self.threads:
 
             self.info({'info': f''''time = {time.ctime()}
@@ -54,10 +54,10 @@ class MainLocalCheck:
         else:
             if self.ore < 1000000:
                 calc = str(round(self.ore // 1000))
-                ore = (f'{calc} k')
+                ore = f'{calc} k'
             else:
                 calc = str(round(self.ore / 1000000, 2))
-                ore = (f'{calc} kk')
+                ore = f'{calc} kk'
             self.info({'status': self.status})
             self.info({'minus': self.minus})
             self.info({'neutral': self.neutral})
@@ -107,7 +107,7 @@ class MainLocalCheck:
                         self.ore += ore_mined
                         self.extraction()
                         self.data_save()
-                self.inforamtion_text()
+                self.information_text()
         except FileNotFoundError:
             self.info({'info': 'NO SAVE'})
             with open('save.txt', encoding='utf-8', mode='x') as _:
@@ -210,7 +210,7 @@ class MainLocalCheck:
                 time.sleep(3)
                 self.neutral_minus_check()
                 self.data_save()
-                self.inforamtion_text()
+                self.information_text()
             if self.cargo == 'empty':
                 mf.click_queue([UNDOCK])
                 time.sleep(random.randint(18, 20))
@@ -287,10 +287,10 @@ class MainLocalCheck:
 
     def local_check(self):
         while True:
-            status_prew = self.status
-            minus_prew = self.minus
-            neutral_prew = self.neutral
-            drill = self.drill_status
+            status_previous = self.status
+            minus_previous = self.minus
+            neutral_previous = self.neutral
+            drill_previous = self.drill_status
             if self.starter:
                 self.start_check()
             while self.status in ['dock', 'warp_to_dock']:
@@ -298,8 +298,9 @@ class MainLocalCheck:
 
             while self.status in ['warp_to_mine', 'mine', 'idle']:
                 self.in_space_check()
-            if status_prew != self.status or minus_prew != self.minus or neutral_prew != self.neutral or drill != self.drill_status:
-                self.inforamtion_text()
+            if status_previous != self.status or minus_previous != self.minus or neutral_previous != self.neutral or \
+                    drill_previous != self.drill_status:
+                self.information_text()
 
     def func_for_tread(self):
         self.starter = False
@@ -309,16 +310,16 @@ class MainLocalCheck:
 
 
 class process(Thread):
-    def __init__(self, check, *args, **kwargs):
+    def __init__(self, init_check, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.check = check
+        self.check = init_check
 
     def run(self):
         while True:
             try:
                 self.check.local_check()
             except OSError as err:
-                print(f'sistem restart... : {err}')
+                print(f'system restart... : {err}')
                 self.run()
 
 
